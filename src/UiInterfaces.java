@@ -1,4 +1,5 @@
 import UiComponents.MenuButton;
+import UiComponents.Views;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -10,18 +11,24 @@ public class UiInterfaces extends JDialog {
   private JPanel views;
   private CardLayout cardLayout;
 
+
+  // General methods
+  private void onCancel() {
+    dispose();
+  }
+
+  // Interface methods
   public UiInterfaces() {
     setContentPane(contentPane);
     setModal(true);
 
-
-    // Configurar el Layout principal
+    // config window properties
     setLayout(new BorderLayout());
 
-    // Crear las vistas
+    // mount of ui components
     createUIComponents();
 
-    // Configurar el CardLayout
+    // add components to the window
     add(menuBar, BorderLayout.WEST);
     add(views, BorderLayout.CENTER);
 
@@ -31,31 +38,6 @@ public class UiInterfaces extends JDialog {
         onCancel();
       }
     });
-  }
-
-  private void onCancel() {
-    dispose();
-  }
-
-
-  private void viewAboutCompensar() {
-    // Crear un panel con la información de Compensar
-  }
-
-  private void viewAboutUs() {
-    // Crear un panel con la información de los desarrolladores
-  }
-
-  private void viewInventory() {
-    // Crear un panel con la información del inventario
-  }
-
-  private void viewInforms() {
-    // Crear un panel con la información de los informes
-  }
-
-  private void viewEmployment() {
-    // Crear un panel con la información de los empleados
   }
 
   private void menuApp () {
@@ -84,23 +66,18 @@ public class UiInterfaces extends JDialog {
     // Acciones de botones
     btnEmploy.addActionListener(e -> {
       cardLayout.show(views, "Employ");
-      viewEmployment();
     });
     btnInventory.addActionListener(e -> {
       cardLayout.show(views, "inventory");
-      viewInventory();
     });
     btnInforms.addActionListener(e -> {
       cardLayout.show(views, "Informs");
-      viewInforms();
     });
     btnAbutCompensar.addActionListener(e -> {
       cardLayout.show(views, "Compensar");
-      viewAboutCompensar();
     });
     btnAboutUs.addActionListener(e -> {
       cardLayout.show(views, "AboutUs");
-      viewAboutUs();
     });
     btnExit.addActionListener(e -> onCancel());
 
@@ -122,26 +99,46 @@ public class UiInterfaces extends JDialog {
     menuBar.add(btnExit);
   }
 
+  // Views
+  private void viewAboutCompensar(JPanel view) {
+    view.add(new JLabel("Información de Compensar"));
+  }
+
+  private void viewAboutUs(JPanel view) {
+    view.add(new JLabel("Sobre Nosotros"));
+  }
+
+  private void viewEmployment(JPanel view) {
+    view.add(new JLabel("Vista de Empleados"));
+  }
+
+  private void viewInventory(JPanel view) {
+    view.add(new JLabel("Vista de Inventario"));
+  }
+
+  private void viewInforms(JPanel view) {
+    view.add(new JLabel("Vista de Informes"));
+  }
+
   private void createViews() {
-    // Crear vistas y añadirlas al CardLayout
-    JPanel viewEmployment = new JPanel();
-    viewEmployment.add(new JLabel("Vista de Empleados"));
-    viewEmployment.setMaximumSize(new Dimension(900, 800));
+    // create views
+    JPanel viewEmployment = new Views();
+    viewEmployment(viewEmployment);
 
     JPanel viewInventory = new JPanel();
-    viewInventory.add(new JLabel("Vista de Inventario"));
+    viewInventory(viewInventory);
 
     JPanel viewInforms = new JPanel();
-    viewInforms.add(new JLabel("Vista de Informes"));
+    viewInforms(viewInforms);
 
     JPanel viewAboutCompensar = new JPanel();
-    viewAboutCompensar.add(new JLabel("Información de Compensar"));
+    viewAboutCompensar(viewAboutCompensar);
 
     JPanel viewAboutUs = new JPanel();
-    viewAboutUs.add(new JLabel("Sobre Nosotros"));
-    views.add(viewInventory, "inventory");
+    viewAboutUs(viewAboutUs);
 
-    // Añadir paneles al CardLayout
+    // Add views to the CardLayout
+    views.add(viewInventory, "inventory");
     views.add(viewEmployment, "Employ");
     views.add(viewInforms, "Informs");
     views.add(viewAboutCompensar, "Compensar");
