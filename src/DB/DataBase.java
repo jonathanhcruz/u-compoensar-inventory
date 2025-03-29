@@ -18,7 +18,7 @@ public class DataBase {
 
         employees.add(new Employees("Juan", "123", 20, "Diurno", new java.util.Date()));
         employees.add(new Employees("Pedro", "456", 30, "Nocturno", new java.util.Date()));
-        employees.add(new Employees("Maria", "789", 40, "Mixto", new java.util.Date()));
+        employees.add(new Employees("Maria", "789", 40, "Diurno", new java.util.Date()));
     }
 
     // Add

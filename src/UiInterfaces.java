@@ -2,15 +2,23 @@ import DB.DataBase;
 import InterfacesData.Employees;
 import InterfacesData.Product;
 import InterfacesData.TextFile;
+import UiComponents.IconCompensar;
 import UiComponents.MenuButton;
 import UiComponents.Views;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.general.DefaultPieDataset;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.desktop.AboutEvent;
 import java.awt.event.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
+
 
 public class UiInterfaces extends JDialog {
   // Variables
@@ -25,15 +33,6 @@ public class UiInterfaces extends JDialog {
   private void onCancel() {
     dispose();
   }
-
-  private void resetForm(JTextField txtId, JTextField txtName, JTextField txtAge, JComboBox<String> workingDaySelect, JTextField txtStartDate) {
-    txtId.setText("Enter the employee ID");
-    txtName.setText("Enter the employee name");
-    txtAge.setText("Enter the employee age");
-    workingDaySelect.setSelectedIndex(0);
-    txtStartDate.setText("dd/mm/yyyy");
-  }
-
 
   // Event Employee
   private void handlerEventEmployee (JTextField txtId, JTextField txtName, JTextField txtAge, JComboBox<String> workingDaySelect, JTextField txtStartDate, DefaultTableModel model, JPanel view, DataBase db) {
@@ -58,7 +57,7 @@ public class UiInterfaces extends JDialog {
       refreshTableEmployee(model, db);
 
       // Clear form
-      resetForm(txtId, txtName, txtAge, workingDaySelect, txtStartDate);
+      resetFormEmployee(txtId, txtName, txtAge, workingDaySelect, txtStartDate);
 
       JOptionPane.showMessageDialog(view, "Employee added successfully");
     } catch (Exception ex) {
@@ -83,15 +82,53 @@ public class UiInterfaces extends JDialog {
       });
     }
   }
+  private void resetFormEmployee(JTextField txtId, JTextField txtName, JTextField txtAge, JComboBox<String> workingDaySelect, JTextField txtStartDate) {
+    txtId.setText("Enter the employee ID");
+    txtName.setText("Enter the employee name");
+    txtAge.setText("Enter the employee age");
+    workingDaySelect.setSelectedIndex(0);
+    txtStartDate.setText("dd/mm/yyyy");
+  }
 
   // Event Inventory
+  private void handlerEventInventory (JTextField txtName, JTextField txtPrices, JComboBox<String> typeProductSelect, JTextField txtStock, JTextField txtProductsSold, DefaultTableModel model, JPanel view, DataBase db) {
+    try {
+      // Validation and conversion
+      String name = txtName.getText();
+      int prices = Integer.parseInt(txtPrices.getText());
+      int stock = Integer.parseInt(txtStock.getText());
+      int productSold = Integer.parseInt(txtProductsSold.getText());
+      String typeOfProduct = Objects.requireNonNull(typeProductSelect.getSelectedItem()).toString();
+
+      // Validate data
+      if (!ValidateDataForms.ValidateProductData(name, prices, stock, productSold, typeOfProduct, view)) {
+        return;
+      }
+
+      // Convert type of product on integer
+      int typeOfProductNumber = ValidateDataForms.ConvertToTypeOfProduct(typeOfProduct);
+
+      // Create new product
+      Product product = new Product(name, typeOfProductNumber, stock, prices, productSold);
+      db.addProduct(product);
+
+      // Actualizar la tabla después de agregar
+      refreshTableInventory(model, db);
+
+      // Clear form
+      resetFormInventory(txtName, txtPrices, typeProductSelect, txtStock, txtProductsSold);
+
+      JOptionPane.showMessageDialog(view, "Employee added successfully");
+    } catch (Exception ex) {
+      JOptionPane.showMessageDialog(view, "Error adding employee: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
+  }
   private void refreshTableInventory(DefaultTableModel model, DataBase db) {
     // Clear table
     model.setRowCount(0);
 
     // Add data to the table
     for (Product product : db.getProducts()) {
-
       model.addRow(new Object[]{
               product.getId(),
               product.getName(),
@@ -105,6 +142,13 @@ public class UiInterfaces extends JDialog {
               "Delete"
       });
     }
+  }
+  private void resetFormInventory(JTextField txtName, JTextField txtPrices, JComboBox<String> typeProductSelect, JTextField txtStock, JTextField txtProductsSold) {
+    txtName.setText("Enter the product name");
+    txtPrices.setText("Enter the product price");
+    txtStock.setText("Enter the stock");
+    txtProductsSold.setText("Enter number of products sold");
+    typeProductSelect.setSelectedIndex(0);
   }
 
   // Interface methods
@@ -130,7 +174,8 @@ public class UiInterfaces extends JDialog {
     });
   }
 
-  private void menuApp () {
+  // Menu
+  private void menuApp (DataBase db) {
     // Crear el panel lateral
     menuBar = new JPanel();
     menuBar.setLayout(new BoxLayout(menuBar, BoxLayout.Y_AXIS));
@@ -138,11 +183,7 @@ public class UiInterfaces extends JDialog {
     menuBar.setBackground(Color.LIGHT_GRAY);
 
     // mount icon in JTable
-    JLabel iconoCompensar = new JLabel(new ImageIcon("src/assets/compensar.png"));
-    iconoCompensar.setMaximumSize(new Dimension(200, 200));
-    iconoCompensar.setAlignmentX(Component.CENTER_ALIGNMENT);
-    iconoCompensar.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
-    iconoCompensar.setHorizontalAlignment(SwingConstants.CENTER);
+    JLabel iconoCompensar = new IconCompensar("compensar.png", 200, 200);
 
     // Agregar botones de ejemplo
     JButton btnEmploy = new MenuButton("Empleados");
@@ -212,23 +253,8 @@ public class UiInterfaces extends JDialog {
     table.setPreferredScrollableViewportSize(new Dimension(800, 400));
     table.setBorder(BorderFactory.createEmptyBorder(30, 0, 0, 0));
 
-    // Actualizar tabla inicialmente
+    // Update table initially
     refreshTableEmployee(model, db);
-
-    // Evento para detectar clic en "Eliminar"
-    table.addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseClicked(MouseEvent e) {
-        int row = table.rowAtPoint(e.getPoint());
-        int column = table.columnAtPoint(e.getPoint());
-
-        // Si la columna "Eliminar" (índice 6) fue clickeada
-        if (column == 6) {
-          String employeeId = model.getValueAt(row, 0).toString();
-          System.out.println("Eliminar empleado con ID: " + employeeId);
-        }
-      }
-    });
 
     // Form configuration
     JPanel formPanel = new JPanel();
@@ -292,23 +318,8 @@ public class UiInterfaces extends JDialog {
     table.setPreferredScrollableViewportSize(new Dimension(800, 400));
     table.setBorder(BorderFactory.createEmptyBorder(30, 0, 0, 0));
 
-    // Actualizar tabla inicialmente
+    // Update table initially
     refreshTableInventory(model, db);
-
-    // Evento para detectar clic en "Eliminar"
-    table.addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseClicked(MouseEvent e) {
-        int row = table.rowAtPoint(e.getPoint());
-        int column = table.columnAtPoint(e.getPoint());
-
-        // Si la columna "Eliminar" (índice 6) fue clickeada
-        if (column == 6) {
-          String employeeId = model.getValueAt(row, 0).toString();
-          System.out.println("Eliminar empleado con ID: " + employeeId);
-        }
-      }
-    });
 
     // Form configuration
     JPanel formPanel = new JPanel();
@@ -318,14 +329,14 @@ public class UiInterfaces extends JDialog {
     formPanel.setPreferredSize(new Dimension(800, 150));
 
     // input fields
-    JTextField txtId = new TextFile("Enter the employee ID");
-    JTextField txtName = new TextFile("Enter the employee name");
-    JTextField txtAge = new TextFile("Enter the employee age");
-    JTextField txtStartDate = new JTextField("dd/mm/yyyy"); // Format: dd/mm/yyyy
+    JTextField txtName = new TextFile("Enter the product name");
+    JTextField txtPrices = new TextFile("Enter the product price");
+    JTextField txtStock = new JTextField("Enter the stock");
+    JTextField txtProductsSold = new JTextField("Enter number of products sold");
 
     // Selects
-    JComboBox<String> workingDaySelect = new JComboBox<>(new String[]{"Select Working Day", "Diurno", "Nocturno"});
-    workingDaySelect.setPreferredSize(new Dimension(200, 40));
+    JComboBox<String> typeProductSelect = new JComboBox<>(new String[]{"Select Type Product", "Aseo", "Papeleria", "Producto para mascotas", "Vivieres", "Otros"});
+    typeProductSelect.setPreferredSize(new Dimension(200, 40));
 
     // Button
     JButton btnAdd = new JButton("Add");
@@ -333,14 +344,14 @@ public class UiInterfaces extends JDialog {
 
     // Add data to DB
     btnAdd.addActionListener(e -> {
-      handlerEventEmployee(txtId, txtName, txtAge, workingDaySelect, txtStartDate, model, view, db);
+      handlerEventInventory(txtName, txtPrices, typeProductSelect, txtStock, txtProductsSold, model, view, db);
     });
 
-    formPanel.add(txtId);
     formPanel.add(txtName);
-    formPanel.add(txtAge);
-    formPanel.add(workingDaySelect);
-    formPanel.add(txtStartDate);
+    formPanel.add(typeProductSelect);
+    formPanel.add(txtPrices);
+    formPanel.add(txtStock);
+    formPanel.add(txtProductsSold);
 
     // Add components to the view
     view.add(formPanel, BorderLayout.SOUTH);
@@ -350,16 +361,130 @@ public class UiInterfaces extends JDialog {
     view.add(scrollPane, BorderLayout.CENTER);
   }
 
-  private void viewInforms(JPanel view) {
-    view.add(new JLabel("Vista de Informes"));
+  private void viewInforms(JPanel view, DataBase db) {
+    view.removeAll();
+
+    // Get data products
+    ArrayList<Product> allProducts = db.getProducts();
+    ArrayList<Employees> allEmployees = db.getEmployees();
+
+    try {
+      // Structure data for the graphic products sold
+      DefaultPieDataset dataProductsSold = new DefaultPieDataset();
+      for (Product product : allProducts) {
+        dataProductsSold.setValue(product.getName(), product.getProductsSold() > 0 ? product.getProductsSold() : 1);
+      }
+
+      // Create graphic
+      JFreeChart graphicProductsSellers = ChartFactory.createPieChart("Productos vendidos", dataProductsSold, true, true, false);
+
+      // set panel for graphic
+      ChartPanel productPanel = new ChartPanel(graphicProductsSellers);
+      productPanel.setMouseWheelEnabled(true);
+      productPanel.setPreferredSize(new Dimension(900, 400));
+
+      // Structure data for the graphic employees worked time
+      DefaultPieDataset dataEmployeesWorkedTime = new DefaultPieDataset();
+      int dayWork = 0;
+      int nightWork = 0;
+
+      for (Employees employee : allEmployees) {
+        if (employee.getWorkingDay().equals("Diurno")) {
+          dayWork++;
+        } else {
+          nightWork++;
+        }
+      }
+
+      dataEmployeesWorkedTime.setValue("Diurno", dayWork);
+      dataEmployeesWorkedTime.setValue("Nocturno", nightWork);
+
+      // Create graphic
+      JFreeChart graphicEmployeesWorkedTime = ChartFactory.createPieChart("Jornada de trabajado por empleado", dataEmployeesWorkedTime, true, true, false);
+
+      // set panel for graphic
+      ChartPanel employeePanel = new ChartPanel(graphicEmployeesWorkedTime);
+      employeePanel.setMouseWheelEnabled(true);
+      employeePanel.setPreferredSize(new Dimension(900, 400));
+
+      // Add components to the view
+      view.setLayout(new BorderLayout());
+      view.add(productPanel, BorderLayout.CENTER);
+      view.add(employeePanel, BorderLayout.SOUTH);
+
+      // Refrescar el panel
+      view.revalidate();
+      view.repaint();
+    } catch (Exception ex) {
+      JOptionPane.showMessageDialog(view, "Error creating the chart: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+      JLabel error = new JLabel("Error creating the chart");
+      error.setFont(new Font("Arial", Font.BOLD, 20));
+      view.add(error);
+    }
   }
 
   private void viewAboutCompensar(JPanel view) {
-    view.add(new JLabel("Información de Compensar"));
+    view.setLayout(new BorderLayout());
+
+    // Create Image
+    JLabel iconoCompensar = new IconCompensar("compensar.png", 200, 200);
+    iconoCompensar.setBorder(BorderFactory.createEmptyBorder(30, 0, 50, 0));
+
+    // Create text
+    final String textAboutCompensar = "Compensar como entidad de Seguridad Social facilita a sus afiliados, a través de los Planes de Bienestar, un amplio portafolio\u200B de servicios que le permite, mediante su utilización empresarial e individual, generar condiciones que favorecen el desarrollo personal y laboral de sus trabajadores y grupo familiar.\n" +
+            "\n" +
+            "Se busca el cumplimiento de propósitos de la comunidad laboral, asociados con calidad de vida, desarrollo personal y profesional, clima laboral y productividad. La labor conjunta generada por la interacción con nuestros afiliados permite recibir sus opiniones, sueños y expectativas, así como afianzar nuestra incondicional voluntad de servicio en procura de brindar el mejor esfuerzo para la construcción de una sociedad mas justa y equilibrada.";
+
+    JTextArea aboutArea = new JTextArea(textAboutCompensar);
+    aboutArea.setLineWrap(true);
+    aboutArea.setWrapStyleWord(true);
+    aboutArea.setEditable(false);
+    aboutArea.setFont(new Font("Arial", Font.PLAIN, 14));
+    aboutArea.setBorder(BorderFactory.createEmptyBorder(30, 50, 10, 50));
+
+    // Create panel for content
+    JPanel panelContenido = new JPanel();
+    panelContenido.setLayout(new BoxLayout(panelContenido, BoxLayout.Y_AXIS));
+    panelContenido.add(iconoCompensar);
+    panelContenido.add(aboutArea);
+
+    // Add components to the view
+    view.add(panelContenido, BorderLayout.CENTER);
+
+    view.revalidate();
+    view.repaint();
   }
 
   private void viewAboutUs(JPanel view) {
-    view.add(new JLabel("Sobre Nosotros"));
+    view.setLayout(new BorderLayout());
+
+    // Create Image
+    JLabel iconoCompensar = new IconCompensar("me.jpg", 200, 200);
+    iconoCompensar.setBorder(BorderFactory.createEmptyBorder(30, 0, 50, 0));
+
+    // Create text
+    final String textAboutCompensar = "Soy Jonathan Cruz, un desarrollador frontend con 7 años de experiencia en la industria. A lo largo de mi carrera, he trabajado con tecnologías como JavaScript, React, Vue, Next.js, Dart, Flutter y SQL, lo que me ha permitido desarrollar aplicaciones robustas y eficientes. Actualmente, soy Software Engineer en Mercado Libre, donde continúo aprendiendo y creciendo en el mundo del desarrollo.\n" +
+            "\n" +
+            "Fuera del trabajo, me apasiona viajar y explorar nuevos lugares, lo que me inspira a mantenerme curioso y abierto a nuevas experiencias. También disfruto del deporte, ya que me ayuda a mantener el equilibrio entre el trabajo y mi bienestar personal. Mi enfoque siempre ha sido el de aprender y mejorar constantemente, lo que me motiva a afrontar nuevos desafíos y continuar creciendo profesionalmente.";
+
+    JTextArea aboutArea = new JTextArea(textAboutCompensar);
+    aboutArea.setLineWrap(true);
+    aboutArea.setWrapStyleWord(true);
+    aboutArea.setEditable(false);
+    aboutArea.setFont(new Font("Arial", Font.PLAIN, 14));
+    aboutArea.setBorder(BorderFactory.createEmptyBorder(30, 50, 10, 50));
+
+    // Create panel for content
+    JPanel panelContenido = new JPanel();
+    panelContenido.setLayout(new BoxLayout(panelContenido, BoxLayout.Y_AXIS));
+    panelContenido.add(iconoCompensar);
+    panelContenido.add(aboutArea);
+
+    // Add components to the view
+    view.add(panelContenido, BorderLayout.CENTER);
+
+    view.revalidate();
+    view.repaint();
   }
 
   private void createViews(DataBase db) {
@@ -371,7 +496,7 @@ public class UiInterfaces extends JDialog {
     viewInventory(viewInventory, db);
 
     JPanel viewInforms = new JPanel();
-    viewInforms(viewInforms);
+    viewInforms(viewInforms, db);
 
     JPanel viewAboutCompensar = new JPanel();
     viewAboutCompensar(viewAboutCompensar);
@@ -392,10 +517,11 @@ public class UiInterfaces extends JDialog {
     cardLayout = new CardLayout();
     views = new JPanel(cardLayout);
 
+
     views.setPreferredSize(new Dimension(900, 800));
     views.setBackground(Color.WHITE);
 
-    menuApp();
+    menuApp(db);
     createViews(db);
   }
 

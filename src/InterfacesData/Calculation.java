@@ -26,14 +26,14 @@ public class Calculation {
 
         if (typeOfProduct == 1) { // Aseo
             iva = price * 0.19;
-        } else if (typeOfProduct == 2) { // papeleria
+        } else if (typeOfProduct == 2) { // Papeleria
             iva = price * 0.09;
-        } else if (typeOfProduct == 3) { // producto para mascotas
+        } else if (typeOfProduct == 3) { // Producto para mascotas
             iva = price * 0.16;
         } else if (typeOfProduct == 4) { // Vivieres
             iva = price * 0.15;
         }
 
-        return iva;
+        return iva; // Otros
     }
 }
