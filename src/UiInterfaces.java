@@ -185,7 +185,7 @@ public class UiInterfaces extends JDialog {
     // mount icon in JTable
     JLabel iconoCompensar = new IconCompensar("compensar.png", 200, 200);
 
-    // Agregar botones de ejemplo
+    // add buttons
     JButton btnEmploy = new MenuButton("Empleados");
     JButton btnInventory = new MenuButton("Inventario");
     JButton btnInforms = new MenuButton("Informes");
@@ -213,20 +213,20 @@ public class UiInterfaces extends JDialog {
     btnExit.addActionListener(e -> onCancel());
 
 
-    // Añadir botones al panel lateral
-    menuBar.add(Box.createVerticalStrut(50)); // Espacio superior
+    // Add components to the menu
+    menuBar.add(Box.createVerticalStrut(50));
     menuBar.add(iconoCompensar);
-    menuBar.add(Box.createVerticalStrut(50)); // Espacio superior
+    menuBar.add(Box.createVerticalStrut(50));
     menuBar.add(btnEmploy);
-    menuBar.add(Box.createVerticalStrut(10)); // Separación
+    menuBar.add(Box.createVerticalStrut(10));
     menuBar.add(btnInventory);
-    menuBar.add(Box.createVerticalStrut(10)); // Separación
+    menuBar.add(Box.createVerticalStrut(10));
     menuBar.add(btnInforms);
-    menuBar.add(Box.createVerticalStrut(10)); // Separación
+    menuBar.add(Box.createVerticalStrut(10));
     menuBar.add(btnAbutCompensar);
-    menuBar.add(Box.createVerticalStrut(10)); // Separación
+    menuBar.add(Box.createVerticalStrut(10));
     menuBar.add(btnAboutUs);
-    menuBar.add(Box.createVerticalStrut(10)); // Separación
+    menuBar.add(Box.createVerticalStrut(10));
     menuBar.add(btnExit);
   }
 
@@ -451,8 +451,6 @@ public class UiInterfaces extends JDialog {
     // Add components to the view
     view.add(panelContenido, BorderLayout.CENTER);
 
-    view.revalidate();
-    view.repaint();
   }
 
   private void viewAboutUs(JPanel view) {
@@ -483,10 +481,9 @@ public class UiInterfaces extends JDialog {
     // Add components to the view
     view.add(panelContenido, BorderLayout.CENTER);
 
-    view.revalidate();
-    view.repaint();
   }
 
+  // Create views
   private void createViews(DataBase db) {
     // create views
     JPanel viewEmployment = new Views();
