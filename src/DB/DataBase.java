@@ -9,6 +9,18 @@ public class DataBase {
     ArrayList<Product> products = new ArrayList<>();
     ArrayList<Employees> employees = new ArrayList<>();
 
+    // Constructor
+    public DataBase() {
+        products.add(new Product("Jobon", 1, 10, 2000, 0));
+        products.add(new Product("Cuaderno", 2, 20, 1500, 0));
+        products.add(new Product("Comida para perro", 3, 4, 30000, 0));
+        products.add(new Product("Arroz", 4, 40, 4000, 0));
+
+        employees.add(new Employees("Juan", "123", 20, "Diurno", new java.util.Date()));
+        employees.add(new Employees("Pedro", "456", 30, "Nocturno", new java.util.Date()));
+        employees.add(new Employees("Maria", "789", 40, "Mixto", new java.util.Date()));
+    }
+
     // Add
     public void addProduct(Product product) {
         products.add(product);
