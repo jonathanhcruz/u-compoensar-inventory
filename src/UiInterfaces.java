@@ -100,14 +100,6 @@ public class UiInterfaces extends JDialog {
   }
 
   // Views
-  private void viewAboutCompensar(JPanel view) {
-    view.add(new JLabel("Información de Compensar"));
-  }
-
-  private void viewAboutUs(JPanel view) {
-    view.add(new JLabel("Sobre Nosotros"));
-  }
-
   private void viewEmployment(JPanel view) {
     view.add(new JLabel("Vista de Empleados"));
   }
@@ -118,6 +110,14 @@ public class UiInterfaces extends JDialog {
 
   private void viewInforms(JPanel view) {
     view.add(new JLabel("Vista de Informes"));
+  }
+
+  private void viewAboutCompensar(JPanel view) {
+    view.add(new JLabel("Información de Compensar"));
+  }
+
+  private void viewAboutUs(JPanel view) {
+    view.add(new JLabel("Sobre Nosotros"));
   }
 
   private void createViews() {

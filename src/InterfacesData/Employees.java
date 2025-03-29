@@ -1,8 +1,9 @@
+package InterfacesData;
+
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.time.Duration;
 import java.util.Map;
 
 public class Employees {
@@ -42,16 +43,16 @@ public class Employees {
       return (int) ChronoUnit.YEARS.between(start, now);
     }
 
+    public Date getStartDate() {
+        return startDate;
+    }
+
     public Map<String, Double> getDiscount() {
         return Calculation.calculateDiscount(getTimeWorked());
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public void setAge(int age) {
