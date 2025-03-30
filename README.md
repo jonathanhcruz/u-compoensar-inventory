@@ -14,7 +14,7 @@ this project is a simple university project created only for educational purpose
 
 [![](https://markdown-videos.deta.dev/youtube/S92bWr6C560)](https://www.youtube.com/watch?v=S92bWr6C560)
 
-#### [Link Video](https://markdown-videos.deta.dev/youtube/S92bWr6C560) 
+#### [Link Video](https://www.youtube.com/watch?v=S92bWr6C560) 
 
 
 ## Requirements
