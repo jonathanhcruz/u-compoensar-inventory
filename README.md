@@ -10,9 +10,10 @@ this project is a simple university project created only for educational purpose
 
 ## Video
 
-https://www.youtube.com/watch?v=S92bWr6C560
 
-[![](https://markdown-videos.deta.dev/youtube/S92bWr6C560)](https://youtu.be/S92bWr6C560?si=vyO02XlI8bwfxjJg)
+
+[![](https://markdown-videos.deta.dev/youtube/S92bWr6C560)](https://www.youtube.com/watch?v=S92bWr6C560)
+
 
 ## Requirements
 
